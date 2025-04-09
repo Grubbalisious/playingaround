@@ -1,14 +1,27 @@
 {
-  "teams": [
-    {
-      "teamAbbreviation": "Carolina Predators",
-      "stadiumAssetId": "13981964341",
-      "jerseyAssetId": "jersey_asset_id_1"
-    },
-    {
-      "teamAbbreviation": "Dallas Legion",
-      "stadiumAssetId": "some_other_stadium_asset_id",
-      "jerseyAssetId": "jersey_asset_id_2"
-    }
-  ]
+    "teams": [
+        {
+            "teamAbbreviation": "CAR",
+            "stadiumAssetId": "13981964341",
+            "colors": {
+                "jerseyShirt": "#0085CA",
+                "shoulderPads": "#0085CA",
+                "leftShoe": "#0085CA",
+                "rightShoe": "#0085CA",
+                "leftSleeve": "#0085CA",
+                "rightSleeve": "#0085CA",
+                "helmet": "#0085CA",
+                "rightSock": "#0085CA",
+                "leftSock": "#0085CA",
+                "leftPants": "#101820",
+                "leftPit": "#0085CA",
+                "rightPit": "#0085CA",
+                "leftGlove": "#0085CA",
+                "rightGlove": "#0085CA",
+                "leftShortSock": "#0085CA",
+                "rightShortSock": "#0085CA"
+            }
+        }
+        // Add other teams here following the same structure
+    ]
 }
