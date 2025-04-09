@@ -1,0 +1,120 @@
+-- Assume this is part of the fetchTeamsTemplate
+local Teams = game:GetService("Teams")
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+
+local TeamData = {}
+
+-- Example function to fetch teams and load configurations
+local function fetchTeamsTemplate()
+    -- Here you would fetch the team data from your server or GitHub, and populate TeamData
+
+    -- Dummy data for testing (replace with real fetch logic)
+    TeamData = {
+        ['Carolina Predators'] = {
+            StadiumAssetId = "13981964341",
+            Colors = {
+                JerseyShirt = Color3.fromHex("#0085CA"),
+                RightPants = Color3.fromHex("#101820"),
+                ShoulderPads = Color3.fromHex("#0085CA"),
+                LeftShoe = Color3.fromHex("#0085CA"),
+                RightShoe = Color3.fromHex("#0085CA"),
+                LeftSleeve = Color3.fromHex("#0085CA"),
+                RightSleeve = Color3.fromHex("#0085CA"),
+                Helmet = Color3.fromHex("#0085CA"),
+                RightSock = Color3.fromHex("#0085CA"),
+                LeftSock = Color3.fromHex("#0085CA"),
+                LeftPants = Color3.fromHex("#101820"),
+                LeftPit = Color3.fromHex("#0085CA"),
+                RightPit = Color3.fromHex("#0085CA"),
+                LeftGlove = Color3.fromHex("#0085CA"),
+                RightGlove = Color3.fromHex("#0085CA"),
+                LeftShortSock = Color3.fromHex("#0085CA"),
+                RightShortSock = Color3.fromHex("#0085CA"),
+            }
+        },
+        -- Add other teams similarly...
+    }
+end
+
+-- Replace Stadium with the correct one based on team
+local function ReplaceStadiumForTeam(teamName)
+    local teamInfo = TeamData[teamName]
+    if not teamInfo then return end
+
+    for _, descendant in ipairs(Workspace:GetDescendants()) do
+        if descendant:IsA("Model") and descendant.Name == "Stadium" then
+            descendant:Destroy()
+        end
+    end
+
+    local assetModel = game:GetObjects("rbxassetid://" .. teamInfo.StadiumAssetId)[1]
+    if assetModel then
+        assetModel.Parent = Workspace
+        print("Loaded stadium for team:", teamName)
+    else
+        warn("Failed to load stadium for team:", teamName)
+    end
+end
+
+-- Apply uniform color to a player
+local function ApplyUniform(Player)
+    local teamName = Player.Team and Player.Team.Name or nil
+    local teamInfo = TeamData[teamName]
+    if not teamInfo then return end
+    local Color = teamInfo.Colors
+
+    if Player.Character then
+        local Uniform = Player.Character:WaitForChild("Uniform", 5)
+        if Uniform then
+            Uniform.Shirt.Color = Color.JerseyShirt
+            Uniform.ShoulderPads.Color = Color.ShoulderPads
+            Uniform.LeftShoe.Color = Color.LeftShoe
+            Uniform.RightShoe.Color = Color.RightShoe
+            Uniform.LeftShortSleeve.Color = Color.LeftSleeve
+            Uniform.RightShortSleeve.Color = Color.RightSleeve
+            Uniform.Helmet.Color = Color.Helmet
+            Uniform.RightSock.Color = Color.RightSock
+            Uniform.LeftSock.Color = Color.LeftSock
+            Uniform.LeftPants.Color = Color.LeftPants
+            Uniform.LeftPit.Color = Color.LeftPit
+            Uniform.RightPit.Color = Color.RightPit
+            Uniform.LeftGlove.Color = Color.LeftGlove
+            Uniform.RightGlove.Color = Color.RightGlove
+            Uniform.LeftShortSock.Color = Color.LeftShortSock
+            Uniform.RightShortSock.Color = Color.RightShortSock
+        end
+    end
+end
+
+-- Handle uniform and stadium when a player joins or changes team
+local function SetupPlayer(Player)
+    Player:GetPropertyChangedSignal("Team"):Connect(function()
+        ApplyUniform(Player)
+        ReplaceStadiumForTeam(Player.Team.Name)
+    end)
+
+    if Player.Team then
+        ReplaceStadiumForTeam(Player.Team.Name)
+    end
+
+    if Player.Character then
+        ApplyUniform(Player)
+    end
+
+    Player.CharacterAdded:Connect(function()
+        task.wait(1)
+        ApplyUniform(Player)
+    end)
+end
+
+-- Initial setup for all players
+for _, Player in ipairs(Players:GetPlayers()) do
+    task.spawn(SetupPlayer, Player)
+end
+
+-- Handle new players
+Players.PlayerAdded:Connect(SetupPlayer)
+
+-- Call fetchTeamsTemplate() to populate the TeamData
+fetchTeamsTemplate()
