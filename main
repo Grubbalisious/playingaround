@@ -1,1 +1,61 @@
+-- Load the Fusion API module
+local FFAPI = loadstring(game:HttpGet('https://raw.githubusercontent.com/Supermrk/FusionAPI/main/src/Modules/FFAPI.lua', true))()
+
+-- Function to fetch the JSON template from GitHub
+local function fetchTeamsTemplate()
+    local url = "https://raw.githubusercontent.com/YourUsername/YourRepository/main/teams_template.json"  -- GitHub URL of the JSON template
+    local response = game:GetService("HttpService"):GetAsync(url)
+    return game:GetService("HttpService"):JSONDecode(response)
+end
+
+-- Function to load a custom stadium based on the team’s abbreviation
+local function loadCustomStadium(teamAbbreviation)
+    local template = fetchTeamsTemplate()  -- Fetch the teams template from GitHub
+    for _, team in ipairs(template.teams) do
+        if team.teamAbbreviation == teamAbbreviation then
+            -- Load and replace the stadium with the asset ID from the template
+            local assetModel = game:GetObjects("rbxassetid://" .. team.stadiumAssetId)[1]
+            if assetModel then
+                assetModel.Parent = game.Workspace
+                print("Loaded custom stadium for team:", teamAbbreviation)
+            else
+                warn("Failed to load custom stadium for team:", teamAbbreviation)
+            end
+        end
+    end
+end
+
+-- Function to apply custom jerseys to players based on the team’s abbreviation
+local function applyCustomJerseys(player)
+    local template = fetchTeamsTemplate()  -- Fetch the teams template from GitHub
+    for _, team in ipairs(template.teams) do
+        if team.teamAbbreviation == player.Team.Name then
+            -- Apply the jersey to the player's character
+            local jerseyId = team.jerseyAssetId
+            if player.Character then
+                local shirt = player.Character:FindFirstChildOfClass("Shirt")
+                if shirt then
+                    shirt.ShirtTemplate = "rbxassetid://" .. jerseyId
+                    print("Applied custom jersey for player:", player.Name, "Team:", team.teamAbbreviation)
+                end
+            end
+        end
+    end
+end
+
+-- Apply custom stadium and jerseys when the home team is set
+local function setupCustomTeams()
+    local homeTeam = FFAPI.Settings.HomeTeam.Abbreviation
+    loadCustomStadium(homeTeam)  -- Load the stadium for the home team
+end
+
+-- Apply custom jerseys when players join or when their character is added
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        applyCustomJerseys(player)
+    end)
+end)
+
+-- Initialize setup (loading the custom stadium)
+setupCustomTeams()
 
