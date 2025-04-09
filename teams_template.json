@@ -1,0 +1,14 @@
+{
+  "teams": [
+    {
+      "teamAbbreviation": "Carolina Predators",
+      "stadiumAssetId": "13981964341",
+      "jerseyAssetId": "jersey_asset_id_1"
+    },
+    {
+      "teamAbbreviation": "Dallas Legion",
+      "stadiumAssetId": "some_other_stadium_asset_id",
+      "jerseyAssetId": "jersey_asset_id_2"
+    }
+  ]
+}
