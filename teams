@@ -1,120 +1,131 @@
--- Assume this is part of the fetchTeamsTemplate
-local Teams = game:GetService("Teams")
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 
-local TeamData = {}
+-- Set your Home and Away teams here
+local HomeTeamName = _G.HomeTeam
+local AwayTeamName = _G.AwayTeam
 
--- Example function to fetch teams and load configurations
-local function fetchTeamsTemplate()
-    -- Here you would fetch the team data from your server or GitHub, and populate TeamData
 
-    -- Dummy data for testing (replace with real fetch logic)
-    TeamData = {
-        ['Carolina Predators'] = {
-            StadiumAssetId = "13981964341",
-            Colors = {
-                JerseyShirt = Color3.fromHex("#0085CA"),
-                RightPants = Color3.fromHex("#101820"),
-                ShoulderPads = Color3.fromHex("#0085CA"),
-                LeftShoe = Color3.fromHex("#0085CA"),
-                RightShoe = Color3.fromHex("#0085CA"),
-                LeftSleeve = Color3.fromHex("#0085CA"),
-                RightSleeve = Color3.fromHex("#0085CA"),
-                Helmet = Color3.fromHex("#0085CA"),
-                RightSock = Color3.fromHex("#0085CA"),
-                LeftSock = Color3.fromHex("#0085CA"),
-                LeftPants = Color3.fromHex("#101820"),
-                LeftPit = Color3.fromHex("#0085CA"),
-                RightPit = Color3.fromHex("#0085CA"),
-                LeftGlove = Color3.fromHex("#0085CA"),
-                RightGlove = Color3.fromHex("#0085CA"),
-                LeftShortSock = Color3.fromHex("#0085CA"),
-                RightShortSock = Color3.fromHex("#0085CA"),
-            }
+-- Embedded team data
+local teams = {
+    ["Kansas City Cherokees"] = {
+        TeamName = "Kansas City Cherokees",
+        NFLTeam = "Kansas City Chiefs",
+        CollegeTeam = "University of Kansas",
+        Colors = {
+            JerseyShirt = "#FF0000",
+            RightPants = "#FFFFFF",
+            ShoulderPads = "#FF0000",
+            LeftShoe = "#FFFFFF",
+            RightShoe = "#FFFFFF",
+            LeftSleeve = "#FF0000",
+            RightSleeve = "#FF0000",
+            Helmet = "#FF0000",
+            RightSock = "#FFFFFF",
+            LeftSock = "#FFFFFF",
+            LeftPants = "#FFFFFF",
+            RightPants = "#FFFFFF",
+            LeftPit = "#FF0000",
+            RightPit = "#FF0000",
+            LeftGlove = "#FF0000",
+            RightGlove = "#FF0000",
+            LeftShortSock = "#FFFFFF",
+            RightShortSock = "#FFFFFF"
         },
-        -- Add other teams similarly...
+        StadiumAssetId = "13981964341"
+    },
+    ["Miami Sharks"] = {
+        TeamName = "Miami Sharks",
+        NFLTeam = "Miami Dolphins",
+        CollegeTeam = "University of Miami",
+        Colors = {
+            JerseyShirt = "#0085CA",
+            RightPants = "#FFFFFF",
+            ShoulderPads = "#0085CA",
+            LeftShoe = "#FFFFFF",
+            RightShoe = "#FFFFFF",
+            LeftSleeve = "#0085CA",
+            RightSleeve = "#0085CA",
+            Helmet = "#0085CA",
+            RightSock = "#FFFFFF",
+            LeftSock = "#FFFFFF",
+            LeftPants = "#FFFFFF",
+            RightPants = "#FFFFFF",
+            LeftPit = "#0085CA",
+            RightPit = "#0085CA",
+            LeftGlove = "#0085CA",
+            RightGlove = "#0085CA",
+            LeftShortSock = "#FFFFFF",
+            RightShortSock = "#FFFFFF"
+        },
+        StadiumAssetId = "13981964341"
     }
-end
+}
 
--- Replace Stadium with the correct one based on team
-local function ReplaceStadiumForTeam(teamName)
-    local teamInfo = TeamData[teamName]
-    if not teamInfo then return end
+-- Load the correct teams
+local homeTeam = teams[HomeTeamName]
+local awayTeam = teams[AwayTeamName]
 
-    for _, descendant in ipairs(Workspace:GetDescendants()) do
-        if descendant:IsA("Model") and descendant.Name == "Stadium" then
-            descendant:Destroy()
+-- Replace Stadium model in the workspace with Home team's stadium
+local function UpdateStadium(stadiumAssetId)
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        if obj:IsA("Model") and obj.Name == "Stadium" then
+            obj:Destroy()
+            break
         end
     end
 
-    local assetModel = game:GetObjects("rbxassetid://" .. teamInfo.StadiumAssetId)[1]
+    local assetModel = game:GetObjects("rbxassetid://" .. stadiumAssetId)[1]
     if assetModel then
         assetModel.Parent = Workspace
-        print("Loaded stadium for team:", teamName)
+        print("Stadium loaded for team:", HomeTeamName)
     else
-        warn("Failed to load stadium for team:", teamName)
+        warn("Failed to load stadium for team:", HomeTeamName)
     end
 end
 
--- Apply uniform color to a player
-local function ApplyUniform(Player)
-    local teamName = Player.Team and Player.Team.Name or nil
-    local teamInfo = TeamData[teamName]
-    if not teamInfo then return end
-    local Color = teamInfo.Colors
+-- Apply uniform colors to a character
+local function SetPlayerUniform(player, teamInfo)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local uniform = character:WaitForChild("Uniform")
 
-    if Player.Character then
-        local Uniform = Player.Character:WaitForChild("Uniform", 5)
-        if Uniform then
-            Uniform.Shirt.Color = Color.JerseyShirt
-            Uniform.ShoulderPads.Color = Color.ShoulderPads
-            Uniform.LeftShoe.Color = Color.LeftShoe
-            Uniform.RightShoe.Color = Color.RightShoe
-            Uniform.LeftShortSleeve.Color = Color.LeftSleeve
-            Uniform.RightShortSleeve.Color = Color.RightSleeve
-            Uniform.Helmet.Color = Color.Helmet
-            Uniform.RightSock.Color = Color.RightSock
-            Uniform.LeftSock.Color = Color.LeftSock
-            Uniform.LeftPants.Color = Color.LeftPants
-            Uniform.LeftPit.Color = Color.LeftPit
-            Uniform.RightPit.Color = Color.RightPit
-            Uniform.LeftGlove.Color = Color.LeftGlove
-            Uniform.RightGlove.Color = Color.RightGlove
-            Uniform.LeftShortSock.Color = Color.LeftShortSock
-            Uniform.RightShortSock.Color = Color.RightShortSock
+    uniform.Shirt.Color = Color3.fromHex(teamInfo.Colors.JerseyShirt)
+    uniform.Helmet.Color = Color3.fromHex(teamInfo.Colors.Helmet)
+    uniform.LeftPants.Color = Color3.fromHex(teamInfo.Colors.LeftPants)
+    uniform.RightPants.Color = Color3.fromHex(teamInfo.Colors.RightPants)
+    uniform.LeftShoe.Color = Color3.fromHex(teamInfo.Colors.LeftShoe)
+    uniform.RightShoe.Color = Color3.fromHex(teamInfo.Colors.RightShoe)
+    uniform.LeftGlove.Color = Color3.fromHex(teamInfo.Colors.LeftGlove)
+    uniform.RightGlove.Color = Color3.fromHex(teamInfo.Colors.RightGlove)
+    uniform.LeftSock.Color = Color3.fromHex(teamInfo.Colors.LeftSock)
+    uniform.RightSock.Color = Color3.fromHex(teamInfo.Colors.RightSock)
+
+    if uniform:FindFirstChild("Helmet") and uniform.Helmet:FindFirstChild("RightLogo") then
+        uniform.Helmet.RightLogo.Decal.Texture = "rbxassetid://" .. teamInfo.StadiumAssetId
+        uniform.Helmet.LeftLogo.Decal.Texture = "rbxassetid://" .. teamInfo.StadiumAssetId
+    end
+end
+
+-- Apply uniforms based on team
+local function ApplyUniforms()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Team and player.Team.Name == HomeTeamName then
+            SetPlayerUniform(player, homeTeam)
+        elseif player.Team and player.Team.Name == AwayTeamName then
+            SetPlayerUniform(player, awayTeam)
         end
     end
 end
 
--- Handle uniform and stadium when a player joins or changes team
-local function SetupPlayer(Player)
-    Player:GetPropertyChangedSignal("Team"):Connect(function()
-        ApplyUniform(Player)
-        ReplaceStadiumForTeam(Player.Team.Name)
-    end)
-
-    if Player.Team then
-        ReplaceStadiumForTeam(Player.Team.Name)
-    end
-
-    if Player.Character then
-        ApplyUniform(Player)
-    end
-
-    Player.CharacterAdded:Connect(function()
+-- Setup for existing and new players
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
         task.wait(1)
-        ApplyUniform(Player)
+        ApplyUniforms()
     end)
-end
+end)
 
--- Initial setup for all players
-for _, Player in ipairs(Players:GetPlayers()) do
-    task.spawn(SetupPlayer, Player)
-end
-
--- Handle new players
-Players.PlayerAdded:Connect(SetupPlayer)
-
--- Call fetchTeamsTemplate() to populate the TeamData
-fetchTeamsTemplate()
+-- Run setup
+UpdateStadium(homeTeam.StadiumAssetId)
+ApplyUniforms()
