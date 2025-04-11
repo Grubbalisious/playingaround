@@ -85,7 +85,8 @@ local function UpdateStadium(stadiumAssetId)
     end
 end
 
--- Apply uniform colors to a character
+
+    -- Apply uniform colors to a character
 local function SetPlayerUniform(player, teamInfo)
     local character = player.Character or player.CharacterAdded:Wait()
     local uniform = character:WaitForChild("Uniform")
@@ -101,8 +102,6 @@ local function SetPlayerUniform(player, teamInfo)
     uniform.RightGlove.Color = Color3.fromHex(teamInfo.Colors.RightGlove)
     uniform.LeftSock.Color = Color3.fromHex(teamInfo.Colors.LeftSock)
     uniform.RightSock.Color = Color3.fromHex(teamInfo.Colors.RightSock)
-    uniform.LeftSleeve.Color = Color3.fromHex(teamInfo.Colors.LeftSleeve)
-    uniform.RightSleeve.Color = Color3.fromHex(teamInfo.Colors.RightSleeve)
     uniform.LeftPit.Color = Color3.fromHex(teamInfo.Colors.LeftPit)
     uniform.RightPit.Color = Color3.fromHex(teamInfo.Colors.RightPit)
     uniform.LeftShortSock.Color = Color3.fromHex(teamInfo.Colors.LeftShortSock)
@@ -122,6 +121,7 @@ local function SetPlayerUniform(player, teamInfo)
         uniform.Helmet.LeftLogo.Decal.Texture = "rbxassetid://" .. teamInfo.StadiumAssetId
     end
 end
+
 
 
 -- Apply uniforms based on team
