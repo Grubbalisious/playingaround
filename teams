@@ -9,7 +9,7 @@ local AwayTeamName = _G.AwayTeam
 
 -- Embedded team data
 local teams = {
-    ["Kansas City Cherokees"] = {
+    ["Carolina Predators"] = {
         TeamName = "Kansas City Cherokees",
         NFLTeam = "Kansas City Chiefs",
         CollegeTeam = "University of Kansas",
