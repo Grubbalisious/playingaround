@@ -9,7 +9,7 @@ local AwayTeamName = _G.AwayTeam
 
 -- Embedded team data
 local teams = {
-    ["Carolina Predators"] = {
+    ["Kansas City Cherokees"] = {
         TeamName = "Kansas City Cherokees",
         NFLTeam = "Kansas City Chiefs",
         CollegeTeam = "University of Kansas",
@@ -85,13 +85,11 @@ local function UpdateStadium(stadiumAssetId)
     end
 end
 
-
-    -- Apply uniform colors to a character
+-- Apply uniform colors to a character
 local function SetPlayerUniform(player, teamInfo)
     local character = player.Character or player.CharacterAdded:Wait()
     local uniform = character:WaitForChild("Uniform")
-    
-    -- Apply colors to each uniform part
+
     uniform.Shirt.Color = Color3.fromHex(teamInfo.Colors.JerseyShirt)
     uniform.Helmet.Color = Color3.fromHex(teamInfo.Colors.Helmet)
     uniform.LeftPants.Color = Color3.fromHex(teamInfo.Colors.LeftPants)
@@ -102,27 +100,12 @@ local function SetPlayerUniform(player, teamInfo)
     uniform.RightGlove.Color = Color3.fromHex(teamInfo.Colors.RightGlove)
     uniform.LeftSock.Color = Color3.fromHex(teamInfo.Colors.LeftSock)
     uniform.RightSock.Color = Color3.fromHex(teamInfo.Colors.RightSock)
-    uniform.LeftPit.Color = Color3.fromHex(teamInfo.Colors.LeftPit)
-    uniform.RightPit.Color = Color3.fromHex(teamInfo.Colors.RightPit)
-    uniform.LeftShortSock.Color = Color3.fromHex(teamInfo.Colors.LeftShortSock)
-    uniform.RightShortSock.Color = Color3.fromHex(teamInfo.Colors.RightShortSock)
 
-    -- Find shoulder pads and apply color if they exist
-    local shoulderPads = character:FindFirstChild("ShoulderPads")
-    if shoulderPads then
-        shoulderPads.Color = Color3.fromHex(teamInfo.Colors.ShoulderPads)
-    else
-        warn("Shoulder pads not found for player:", player.Name)
-    end
-
-    -- Apply logos on helmet if they exist
     if uniform:FindFirstChild("Helmet") and uniform.Helmet:FindFirstChild("RightLogo") then
         uniform.Helmet.RightLogo.Decal.Texture = "rbxassetid://" .. teamInfo.StadiumAssetId
         uniform.Helmet.LeftLogo.Decal.Texture = "rbxassetid://" .. teamInfo.StadiumAssetId
     end
 end
-
-
 
 -- Apply uniforms based on team
 local function ApplyUniforms()
